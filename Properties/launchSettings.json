@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "LogosVerse": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "BIBLE_API_KEY": "49724438980dd73f528ac426354909bb"
+      }
+    }
+  }
+}
