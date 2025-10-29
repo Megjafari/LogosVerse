@@ -1,5 +1,4 @@
 ﻿using LogosVerse.Models;
-using Logoverse.Models;
 using System;
 
 namespace LogosVerse.Helper;
@@ -27,20 +26,58 @@ public static class MenuHelper
         Console.Write("Choose option: ");
     }
 
-    public static void ShowBibleMenu()      //Visar bibelmenyn
+    public static void ShowBibleMenu()
     {
         Console.Clear();
         Console.WriteLine("=== READ BIBLE ===");
-        Console.WriteLine("Choose book:");
-        Console.WriteLine("1. Genesis");
-        Console.WriteLine("2. Psalms");
-        Console.WriteLine("3. Matthew");
-        Console.WriteLine("4. Mark");
-        Console.WriteLine("5. Luke");
-        Console.WriteLine("6. John");
-        Console.WriteLine("7. Romans");
-        Console.WriteLine("8. Back");
+        Console.WriteLine("Choose book category:");
+        Console.WriteLine("1. Old Testament");
+        Console.WriteLine("2. New Testament");
+        Console.WriteLine("3. Back");
+        
+        Console.Write("Choose: ");
+    }
+
+    public static void ShowOldTestamentMenu()
+    {
+        Console.Clear();
+        Console.WriteLine("=== OLD TESTAMENT ===");
+
+        var otBooks = BibleBooks.AllBooks.Take(39).ToList();
+
+        for (int i = 0; i < otBooks.Count; i++)
+        {
+            Console.WriteLine($"{i + 1}. {otBooks[i].Name}");
+        }
+        Console.WriteLine("0. Back");
         Console.Write("Choose book: ");
+    }
+
+    public static void ShowNewTestamentMenu()
+    {
+        Console.Clear();
+        Console.WriteLine("=== NEW TESTAMENT ===");
+
+        var ntBooks = BibleBooks.AllBooks.Skip(39).ToList();
+
+        for (int i = 0; i < ntBooks.Count; i++)
+        {
+            Console.WriteLine($"{i + 1}. {ntBooks[i].Name}");
+        }
+        Console.WriteLine("0. Back");
+        Console.Write("Choose book: ");
+    }
+
+    public static string GetBookIdFromOldTestament(int choice)
+    {
+        var otBooks = BibleBooks.AllBooks.Take(39).ToList();
+        return choice > 0 && choice <= otBooks.Count ? otBooks[choice - 1].Id : null;
+    }
+
+    public static string GetBookIdFromNewTestament(int choice)
+    {
+        var ntBooks = BibleBooks.AllBooks.Skip(39).ToList();
+        return choice > 0 && choice <= ntBooks.Count ? ntBooks[choice - 1].Id : null;
     }
 
     public static void ShowSettingsMenu(User user)      //Visar inställningsmenyn

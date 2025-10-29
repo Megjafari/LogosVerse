@@ -1,7 +1,6 @@
 ﻿using System;
 using LogosVerse.Models;
 using LogosVerse.Services;
-using LogosVerse.Helper;
 
 
 namespace LogosVerse
