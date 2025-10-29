@@ -1,10 +1,11 @@
-﻿using LogosVerse.Models;
+﻿using LogosVerse.Helper;
+using LogosVerse.Models;
 using LogosVerse.Services;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace LogosVerse.Helper;
+namespace LogosVerse;
 
 public static class BibleApp
 {
@@ -185,24 +186,96 @@ public static class BibleApp
         ReadBibleImplementation(currentUser.username).GetAwaiter().GetResult();
     }
 
-    private static async Task ReadBibleImplementation(string userName)  // Asynkron metod för att läsa bibeln
+    private static async Task ReadBibleImplementation(string userName)
     {
-        Console.Clear();
-        Console.WriteLine($"=== READ BIBLE - {userName.ToUpper()} ===");
+        while (true)
+        {
+            Console.Clear();
+            Console.WriteLine($"=== READ BIBLE - {userName.ToUpper()} ===");
 
-        MenuHelper.ShowBibleMenu();
-        string bookChoice = Console.ReadLine();
+            MenuHelper.ShowBibleMenu();
+            string categoryChoice = Console.ReadLine();
 
-        if (bookChoice == "8") return;
+            string bookId = null;
 
-        string book = MenuHelper.GetBookName(bookChoice);
+            switch (categoryChoice)
+            {
+                case "1": // Old Testament
+                    bookId = await SelectBookFromCategory("Old Testament");
+                    break;
+                case "2": // New Testament
+                    bookId = await SelectBookFromCategory("New Testament");
+                    break;
+                case "3": // Back
+                    return;
+                default:
+                    MenuHelper.ShowErrorMessage("Invalid choice.");
+                    continue;
+            }
+
+            if (bookId == null) continue; // User went back
+
+            await ReadBookChapterVerse(bookId);
+        }
+    }
+
+    private static async Task<string> SelectBookFromCategory(string category)
+    {
+        var books = category == "Old Testament"
+            ? BibleBooks.AllBooks.Take(39).ToList()
+            : BibleBooks.AllBooks.Skip(39).ToList();
+
+        int page = 0;
+        const int booksPerPage = 20;
+
+        while (true)
+        {
+            Console.Clear();
+            Console.WriteLine($"=== {category.ToUpper()} ===");
+            Console.WriteLine($"Page {page + 1}/{(int)Math.Ceiling(books.Count / (double)booksPerPage)}");
+            Console.WriteLine();
+
+            int startIndex = page * booksPerPage;
+            int endIndex = Math.Min(startIndex + booksPerPage, books.Count);
+
+            for (int i = startIndex; i < endIndex; i++)
+            {
+                Console.WriteLine($"{i - startIndex + 1}. {books[i].Name}");
+            }
+
+            Console.WriteLine();
+            Console.WriteLine("N. Next Page");
+            Console.WriteLine("P. Previous Page");
+            Console.WriteLine("0. Back");
+            Console.Write("Choose book: ");
+
+            string choice = Console.ReadLine()?.ToUpper();
+
+            if (choice == "0") return null;
+            if (choice == "N" && endIndex < books.Count) page++;
+            else if (choice == "P" && page > 0) page--;
+            else if (int.TryParse(choice, out int bookChoice) && bookChoice >= 1 && bookChoice <= (endIndex - startIndex))
+            {
+                int selectedIndex = startIndex + bookChoice - 1;
+                return books[selectedIndex].Id;
+            }
+            else
+            {
+                MenuHelper.ShowErrorMessage("Invalid choice.");
+            }
+        }
+    }
+
+    private static async Task ReadBookChapterVerse(string bookId)
+    {
+        var book = BibleBooks.GetBookById(bookId);
         if (book == null)
         {
-            MenuHelper.ShowErrorMessage("Invalid book choice.");
+            MenuHelper.ShowErrorMessage("Book not found.");
             return;
         }
 
-        Console.Write("Enter chapter: ");
+        Console.Write($"Enter chapter for {book.Name}: ");
         if (!int.TryParse(Console.ReadLine(), out int chapter))
         {
             MenuHelper.ShowErrorMessage("Invalid chapter number.");
@@ -216,13 +289,13 @@ public static class BibleApp
             return;
         }
 
-        await DisplayBibleText(book, chapter, verse);
+        await DisplayBibleText(bookId, chapter, verse);
         MenuHelper.PressAnyKeyToContinue();
     }
 
     private static async Task DisplayBibleText(string book, int chapter, int verse)
     {
-        string bookName = MenuHelper.GetBookDisplayName(book);
+        string bookName = BibleBooks.GetBookById(book)?.Name ?? book;
         Console.WriteLine($"\n{bookName} {chapter}:{verse}");
         Console.WriteLine("Fetching from API.Bible...");
 

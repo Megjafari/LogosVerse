@@ -1,4 +1,4 @@
-﻿using Logoverse.Models;
+﻿using LogosVerse.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -52,7 +52,7 @@ public class BibleService       //Service för att hämta bibelverser från en e
                         {
                             Book = book,
                             Chapter = chapter,
-                            Versenumber = verse,
+                            Verse = verse,
                             Text = cleanText
                         };
                     }
@@ -62,7 +62,7 @@ public class BibleService       //Service för att hämta bibelverser från en e
                 {
                     Book = book,
                     Chapter = chapter,
-                    Versenumber = verse,
+                    Verse = verse,
                     Text = "Content not found in API response"
                 };
             }
@@ -72,7 +72,7 @@ public class BibleService       //Service för att hämta bibelverser från en e
                 {
                     Book = book,
                     Chapter = chapter,
-                    Versenumber = verse,
+                    Verse = verse,
                     Text = $"API Error: {response.StatusCode}"
                 };
             }
@@ -83,7 +83,7 @@ public class BibleService       //Service för att hämta bibelverser från en e
             {
                 Book = book,
                 Chapter = chapter,
-                Versenumber = verse,
+                Verse = verse,
                 Text = $"Error: {ex.Message}"
             };
         }
@@ -119,7 +119,7 @@ public class BibleService       //Service för att hämta bibelverser från en e
                         {
                             Book = book,
                             Chapter = chapter,
-                            Versenumber = 1, 
+                            Verse = 1, 
                             Text = cleanText
                         });
                     }
@@ -135,7 +135,7 @@ public class BibleService       //Service för att hämta bibelverser från en e
                     {
                         Book = book,
                         Chapter = chapter,
-                        Versenumber = 1,
+                        Verse = 1,
                         Text = $"Could not fetch chapter: {response.StatusCode}"
                     }
                 };
@@ -149,7 +149,7 @@ public class BibleService       //Service för att hämta bibelverser från en e
                 {
                     Book = book,
                     Chapter = chapter,
-                    Versenumber = 1,
+                    Verse = 1,
                     Text = $"Error fetching chapter: {ex.Message}"
                 }
             };

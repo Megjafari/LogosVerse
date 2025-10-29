@@ -1,5 +1,5 @@
 ﻿
-using Logoverse.Models;
+using LogosVerse.Models;
 
 namespace LogosVerse.Services;
 public class AIService

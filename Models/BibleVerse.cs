@@ -1,13 +1,10 @@
 ﻿using LogosVerse.Helper;
 
-namespace Logoverse.Models;
-
-
-public class BibleVerse     //Definierar en klass som heter BibleVerse
+public class BibleVerse
 {
     public string Book { get; set; }
     public int Chapter { get; set; }
-    public int Versenumber { get; set; }
+    public int Verse { get; set; }
     public string Text { get; set; }
 
     public BibleVerse() { }
@@ -16,19 +13,21 @@ public class BibleVerse     //Definierar en klass som heter BibleVerse
     {
         Book = book;
         Chapter = chapter;
-        Versenumber = verse;
+        Verse = verse;
         Text = text;
     }
 
-    public override string ToString()   //Override av ToString-metoden för att returnera en strängrepresentation av versen
+    public override string ToString()
     {
-        string bookName = MenuHelper.GetBookDisplayName(Book);
-        return $"{bookName} {Chapter}:{Versenumber} - {Text}";
+        var book = BibleBooks.GetBookById(Book);
+        string bookName = book?.Name ?? Book;
+        return $"{bookName} {Chapter}:{Verse} - {Text}";
     }
 
-    public string GetReference()    //Metod för att få referensen till versen
+    public string GetReference()
     {
-        string bookName = MenuHelper.GetBookDisplayName(Book);
-        return $"{bookName} {Chapter}:{Versenumber}";
+        var book = BibleBooks.GetBookById(Book);
+        string bookName = book?.Name ?? Book;
+        return $"{bookName} {Chapter}:{Verse}";
     }
 }
